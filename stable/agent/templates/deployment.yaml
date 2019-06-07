@@ -26,6 +26,9 @@ spec:
         {{- if .Values.registryCreds.dockerconfigjson }}
         checksum/binarystore: {{ include (print $.Template.BasePath "/secret-dockerconfigjson.yaml") . | sha256sum }}
         {{- end }}
+{{- with .Values.podAnnotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       serviceAccount: {{ template "fullname" . }}
       containers:

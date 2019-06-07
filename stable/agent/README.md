@@ -79,6 +79,7 @@ Parameter | Description | Default
 `nodeSelector` | Node labels for pod assignment | `{}`
 `tolerations` | Node tolerations for pod assignment | `{}`
 `affinity` | Node/pod affinity | `{}`
+`podAnnotations` | Extra annotation to apply to the pod | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

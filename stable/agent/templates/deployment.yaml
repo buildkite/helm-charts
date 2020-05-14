@@ -65,6 +65,10 @@ spec:
             {{- if .Values.dind.enabled }}
             - name: DOCKER_HOST
               value: "tcp://localhost:{{ .Values.dind.port | default "2375" }}"
+            - name: BUILDKITE_BUILD_PATH
+              value: "/var/buildkite/builds"
+            - name: BUILDKITE_PLUGINS_PATH
+              value: "/var/buildkite/plugins"
             {{- end }}
             # EXTRA BUILDKITE AGENT ENV VARS
 {{- if .Values.extraEnv }}

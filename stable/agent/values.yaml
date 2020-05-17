@@ -14,8 +14,8 @@ image:
 agent:
   # Your Buildkite agent token, it must be set
   token: ""
-  # Agent meta-data, which can be used to assign jobs
-  meta: "role=agent"
+  # Agent tags, which can be used to assign jobs
+  tags: "role=agent"
 
 # Enable mounting the hosts docker socket into the agent container
 enableHostDocker: true

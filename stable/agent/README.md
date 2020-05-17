@@ -66,7 +66,7 @@ Parameter | Description | Default
 `image.tag` | Image tag | ``
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `agent.token` | Agent token | Must be specified
-`agent.meta` | Agent meta-data | `role=agent`
+`agent.tags` | Agent tags | `role=agent`
 `enableHostDocker` | Mount docker socket | `true`
 `securityContext` | Pod security context to set | `{}`
 `extraEnv` | Agent extra env vars | `nil`

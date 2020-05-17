@@ -92,6 +92,10 @@ spec:
             - name: shared-volume
               mountPath: "/var/buildkite"
             {{- end }}
+            {{- if .Values.entrypointd }}
+            - name: entrypointd
+              mountPath: /docker-entrypoint.d/
+            {{- end }}
 {{- if .Values.dind.enabled }}
         - name: dind
           image: {{ .Values.dind.image | default "docker:19.03-dind" }}
@@ -129,6 +133,12 @@ spec:
           emptyDir: {}
         - name: shared-volume
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.entrypointd }}
+        - name: entrypointd
+          configMap:
+            name: {{ template "fullname" . }}-entrypointd
+            defaultMode: 0777
         {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:

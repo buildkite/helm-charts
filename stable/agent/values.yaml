@@ -62,6 +62,13 @@ registryCreds:
   # to be used with imagePullSecrets
   dockerconfigjson: ""
 
+# Add scriptes to /docker-entrypoint.d/ via a ConfigMap
+entrypointd: {}
+# 01-install-kubectl: |
+#   #!/bin/bash
+#   set -euo pipefail
+#   apt-get update && apt-get install -y kubectl
+
  # Uncomment below to enable docker socket liveness probe
 livenessProbe:
   # initialDelaySeconds: 15

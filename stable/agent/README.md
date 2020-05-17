@@ -73,6 +73,7 @@ Parameter | Description | Default
 `privateSshKey` | Agent ssh key for git access | `nil`
 `registryCreds.gcrServiceAccountKey` | GCP Service account json key | `nil`
 `registryCreds.dockerConfig` | Private registry docker config.json | `nil`
+`entrypointd` | Add files to /docker-entrypoint.d/ via a ConfigMap | `{}`
 `rbac.create` | Whether to create RBAC resources to be used by the pod | `false`
 `rbac.role.rules` | List of rules following the role specification | See [values.yaml](values.yaml)
 `volumeMounts` | Extra volumeMounts configuration | `nil`

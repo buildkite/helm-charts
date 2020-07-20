@@ -90,7 +90,7 @@ spec:
             {{- end }}
             {{- if .Values.dind.enabled }}
             - name: shared-volume
-              mountPath: "/var/buildkite"
+              mountPath: "/var/buildkite/shared"
             {{- end }}
 {{- if .Values.dind.enabled }}
         - name: dind
@@ -104,7 +104,7 @@ spec:
           - name: "docker-graph-storage"
             mountPath: "/var/lib/docker"
           - name: shared-volume
-            mountPath: "/var/buildkite"
+            mountPath: "/var/buildkite/shared"
 {{- end }}
 {{- if .Values.podContainers }}{{ toYaml .Values.podContainers | nindent 8 }}{{- end }}
       volumes:

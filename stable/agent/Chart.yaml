@@ -1,9 +1,9 @@
 apiVersion: v1
 description: Buildkite Agent Chart
 name: agent
-version: 0.3.13
-appVersion: 3.17.0
-icon: https://raw.githubusercontent.com/buildkite/site/master/assets/images/brand-assets/buildkite-mark-on-light.png
+version: 0.4.2
+appVersion: 3.22.1
+icon: https://buildkite.com/_next/static/assets/assets/images/brand-assets/buildkite-logo-portrait-on-light-61fc0230.png
 keywords:
 - kubernetes deployment
 - helm release

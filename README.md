@@ -1,4 +1,4 @@
-# Buildkite Helm Charts Repository
+# Buildkite Helm Charts Repository [![Build status](https://badge.buildkite.com/f0a51d12ea264f0cdbcbb70a6809019cc11a05580e72ff83ef.svg?branch=master)](https://buildkite.com/buildkite/helm-charts)
 
 The official [Buildkite](https://buildkite.com/docs/agent) [Helm](https://helm.sh) Charts repository.
 

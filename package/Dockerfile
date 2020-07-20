@@ -1,7 +1,10 @@
-FROM alpine
+FROM alpine:3.12
 
-RUN apk add --update bash openssl curl git \
+# Set Helm version
+ENV DESIRED_VERSION=v3.2.3
+
+RUN apk add --update bash ca-certificates openssl curl git \
     && (curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash) \
-    && helm init --client-only
+    && helm version
 
 COPY package.sh /usr/sbin/

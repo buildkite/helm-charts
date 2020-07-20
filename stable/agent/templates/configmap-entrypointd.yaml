@@ -1,13 +1,13 @@
+{{- if .Values.entrypointd }}
 apiVersion: v1
-kind: ServiceAccount
+kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "fullname" . }}-entrypointd
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- if .Values.serviceAccount.annotations }}
-  annotations:
-{{ toYaml .Values.serviceAccount.annotations | indent 4 }}
+data:
+{{ toYaml .Values.entrypointd | indent 2 }}
 {{- end }}

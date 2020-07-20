@@ -1,9 +1,11 @@
 env:
   GIT_AUTHOR_NAME: "Buildkite CI"
   GIT_AUTHOR_EMAIL: "support@buildkite.com"
+  GIT_COMMITTER_NAME: "Buildkite CI"
+  GIT_COMMITTER_EMAIL: "support@buildkite.com"
 
 steps:
   - label: ":shipit:" 
-    commands: make build release
+    command: "make build release"
     concurrency_group: "${BUILDKITE_PIPELINE_SLUG}/deploy"
     concurrency: 1

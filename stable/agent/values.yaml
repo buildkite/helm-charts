@@ -14,15 +14,19 @@ image:
 agent:
   # Your Buildkite agent token, it must be set
   token: ""
-  # Agent meta-data, which can be used to assign jobs
-  meta: "role=agent"
+  # Agent tags, which can be used to assign jobs
+  tags: "role=agent"
 
 # Enable mounting the hosts docker socket into the agent container
 enableHostDocker: true
 
-# Enable security context configuration
+# Enable security context configuration for the container
 securityContext: {}
   # privileged: true
+
+# Enable security context configuration for the pod
+podSecurityContext: {}
+  # fsGroup: 1000
 
 # Extra env vars to be passed
 # If you do want to pass extra env vars to the agent, uncomment the following
@@ -61,6 +65,16 @@ registryCreds:
   # base64 encoded private registry docker config.json file
   # to be used with imagePullSecrets
   dockerconfigjson: ""
+
+# Add scriptes to /docker-entrypoint.d/ via a ConfigMap
+entrypointd: {}
+# 01-install-kubectl: |
+#   #!/bin/bash
+#   set -euo pipefail
+#   apt-get update && apt-get install -y kubectl
+
+serviceAccount:
+  annotations: {}
 
  # Uncomment below to enable docker socket liveness probe
 livenessProbe:
@@ -147,3 +161,18 @@ podDisruptionBudget:
 
 # Extra annotations for the pod
 podAnnotations: {}
+
+# Extra "sidecar" containers for the pod
+podContainers: {}
+# - name: container-name
+#   image: container-image:tag
+#   args: ["cmd"]
+#   env:
+#   - name: VAR_NAME
+#     value: var_value
+
+# Preconfigured Docker-in-Docker (DinD) container specification
+dind:
+  enabled: false
+  image: docker:19.03-dind
+  port: 2375

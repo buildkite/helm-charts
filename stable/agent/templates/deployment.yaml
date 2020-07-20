@@ -53,8 +53,8 @@ spec:
                 secretKeyRef:
                   name: {{ template "fullname" . }}
                   key: agent-token
-            - name: BUILDKITE_AGENT_META_DATA
-              value: "{{ .Values.agent.meta }}"
+            - name: BUILDKITE_AGENT_TAGS
+              value: "{{ .Values.agent.tags }}"
             {{- if .Values.privateSshKey }}
             - name: SSH_PRIVATE_RSA_KEY
               valueFrom:
@@ -65,6 +65,12 @@ spec:
             {{- if .Values.dind.enabled }}
             - name: DOCKER_HOST
               value: "tcp://localhost:{{ .Values.dind.port | default "2375" }}"
+            - name: BUILDKITE_BUILD_PATH
+              value: "/var/buildkite/builds"
+            - name: BUILDKITE_PLUGINS_PATH
+              value: "/var/buildkite/plugins"
+            - name: BUILDKITE_HOOKS_PATH
+              value: "/var/buildkite/hooks"
             {{- end }}
             # EXTRA BUILDKITE AGENT ENV VARS
 {{- if .Values.extraEnv }}
@@ -92,6 +98,10 @@ spec:
             - name: shared-volume
               mountPath: "/var/buildkite/shared"
             {{- end }}
+            {{- if .Values.entrypointd }}
+            - name: entrypointd
+              mountPath: /docker-entrypoint.d/
+            {{- end }}
 {{- if .Values.dind.enabled }}
         - name: dind
           image: {{ .Values.dind.image | default "docker:19.03-dind" }}
@@ -107,6 +117,10 @@ spec:
             mountPath: "/var/buildkite/shared"
 {{- end }}
 {{- if .Values.podContainers }}{{ toYaml .Values.podContainers | nindent 8 }}{{- end }}
+{{- with .Values.podSecurityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+{{- end }}
       volumes:
 {{- if .Values.volumes }}{{ toYaml .Values.volumes | nindent 8 }}{{- end }}
 {{- if .Values.enableHostDocker }}
@@ -129,6 +143,12 @@ spec:
           emptyDir: {}
         - name: shared-volume
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.entrypointd }}
+        - name: entrypointd
+          configMap:
+            name: {{ template "fullname" . }}-entrypointd
+            defaultMode: 0777
         {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:

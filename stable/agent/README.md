@@ -26,11 +26,11 @@ helm install --name bk-agent --namespace buildkite buildkite/agent \
     --set agent.token="BUILDKITE_AGENT_TOKEN"
 ```
 
-To install the chart with the release name `bk-agent` and set Agent meta-data and git repo SSH key:
+To install the chart with the release name `bk-agent` and set Agent tags and git repo SSH key:
 
 ```console
 helm install --name bk-agent --namespace buildkite buildkite/agent \
-  --set agent.token="$(cat buildkite.token)",agent.meta="role=production" \
+  --set agent.token="$(cat buildkite.token)",agent.tags="role=production" \
   --set privateSshKey="$(cat buildkite.key)"  \
   --set registryCreds.gcrServiceAccountKey="$(cat gcr_service_account.key | base64)"
 ```
@@ -66,13 +66,16 @@ Parameter | Description | Default
 `image.tag` | Image tag | ``
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `agent.token` | Agent token | Must be specified
-`agent.meta` | Agent meta-data | `role=agent`
+`agent.tags` | Agent tags | `role=agent`
 `enableHostDocker` | Mount docker socket | `true`
-`securityContext` | Pod security context to set | `{}`
+`podSecurityContext` | Pod security context to set | `{}`
+`securityContext` | Container security context to set | `{}`
 `extraEnv` | Agent extra env vars | `nil`
 `privateSshKey` | Agent ssh key for git access | `nil`
 `registryCreds.gcrServiceAccountKey` | GCP Service account json key | `nil`
 `registryCreds.dockerConfig` | Private registry docker config.json | `nil`
+`entrypointd` | Add files to /docker-entrypoint.d/ via a ConfigMap | `{}`
+`serviceAccount.annotation` | Extra annotations for the generated ServiceAccount | `{}`
 `rbac.create` | Whether to create RBAC resources to be used by the pod | `false`
 `rbac.role.rules` | List of rules following the role specification | See [values.yaml](values.yaml)
 `volumeMounts` | Extra volumeMounts configuration | `nil`
@@ -85,7 +88,7 @@ Parameter | Description | Default
 `podAnnotations` | Extra annotation to apply to the pod | `{}`
 `podContainers` | Extra pod container or sidecar configuration | `nil`
 `dind.enabled` | Enable preconfigured Docker-in-Docker (DinD) pod configuration | `false`
-`dind.image` | Image to use for Docker-in-Docker (DinD) pod | `docker:19.03-dind`
+`dind.image` | Image to use for Docker-in-Docker (DinD) pod container | `docker:19.03-dind`
 `dind.port` | Port Docker-in-Docker (DinD) daemon listens on as REST request proxy | `2375`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

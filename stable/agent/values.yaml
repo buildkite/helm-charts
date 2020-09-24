@@ -76,7 +76,7 @@ entrypointd: {}
 serviceAccount:
   annotations: {}
 
- # Uncomment below to enable docker socket liveness probe
+# Uncomment below to enable docker socket liveness probe
 livenessProbe:
   # initialDelaySeconds: 15
   # timeoutSeconds: 1
@@ -153,6 +153,18 @@ rbac:
           - get
           - create
           - update
+
+horizontalPodAutoscaler:
+  enabled: false
+  maxReplicas: null
+  minReplicas: null
+  type: null
+  utilizationPercentage: null
+
+  # https://github.com/kubernetes/metrics/blob/master/IMPLEMENTATIONS.md#custom-metrics-api
+  customMetric:
+    name: null
+    filter: {}
 
 podDisruptionBudget:
   enabled: false

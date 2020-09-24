@@ -89,6 +89,13 @@ Parameter | Description | Default
 `affinity` | Node/pod affinity | `{}`
 `podAnnotations` | Extra annotation to apply to the pod | `{}`
 `podContainers` | Extra pod container or sidecar configuration | `nil`
+`horizontalPodAutoscaler.enabled` | Enable `HorizontalPodAutoscaler`. | `false`
+`horizontalPodAutoscaler.types` | Metric types to enable for the `HorizontalPodAutoscaler`. | `{}`
+`horizontalPodAutoscaler.maxReplicas` | Set `maxReplicas` value for `HorizontalPodAutoscaler`. | `nil`
+`horizontalPodAutoscaler.minReplicas` | Set `minReplicas` value for `HorizontalPodAutoscaler`. | `nil`
+`podDisruptionBudget.enabled` | Enable `PodDisruptionBudget`. | `false`
+`podDisruptionBudget.maxUnavailable` | Set `maxUnavailable` field for `PodDisruptionBudget`. | `1`
+`podDisruptionBudget.minAvailable` | Set `minAvailable` field for `PodDisruptionBudget` | `nil`
 `dind.enabled` | Enable preconfigured Docker-in-Docker (DinD) pod configuration | `false`
 `dind.image` | Image to use for Docker-in-Docker (DinD) pod container | `docker:19.03-dind`
 `dind.port` | Port Docker-in-Docker (DinD) daemon listens on as REST request proxy | `2375`
@@ -102,6 +109,39 @@ helm install --name bk-agent --namespace buildkite buildkite/agent -f values.yam
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml) file
+
+### Configuring the Horizontal Pod Autoscaler
+
+The `HorizontalPodAutoscaler` configuration section requires certain values to be set when enabling it or the Chart will error during install.
+
+The following fields are required:
+
+- `maxReplicas` - The `maxReplicas` field.
+- `minReplicas` - The `minReplicas` field.
+- `types` - A dictionary to create metrics types in the `HorizontalPodAutoscaler`. This is a structured dictionary that will accept the following headings:
+  - `cpu`
+  - `memory`
+  - `custom`
+
+The structure for the blocks is documented here:
+
+```yaml
+horizontalPodAutoscaler:
+  enabled: true
+  maxReplicas: 50
+  minReplicas: 10
+  types:
+    cpu:
+      type: Utilization # or AverageValue
+      target: 80
+    memory:
+      type: AverageValue # or Utilization
+      target: 80
+    custom:
+      metricName: requests-per-second
+      type: AverageValue # or Value
+      target: 2k
+```
 
 ## Buildkite pipeline examples
 

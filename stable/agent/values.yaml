@@ -156,15 +156,11 @@ rbac:
 
 horizontalPodAutoscaler:
   enabled: false
+  # A list of types to use for autoscaling.
+  # Can be cpu, memory, or custom.
+  types: {}
   maxReplicas: null
   minReplicas: null
-  type: null
-  utilizationPercentage: null
-
-  # https://github.com/kubernetes/metrics/blob/master/IMPLEMENTATIONS.md#custom-metrics-api
-  customMetric:
-    name: null
-    filter: {}
 
 podDisruptionBudget:
   enabled: false

@@ -1,0 +1,42 @@
+{{- if and (.Values.horizontalPodAutoscaler.enabled) (.Values.horizontalPodAutoscaler.types) }}
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "fullname" . }}
+  minReplicas: {{ required "If enabling the HorizontalPodAutoscaler, you must provide .Values.horizontalPodAutoscaler.minReplicas!" .Values.horizontalPodAutoscaler.minReplicas }}
+  maxReplicas: {{ required "If enabling the HorizontalPodAutoscaler, you must provide .Values.horizontalPodAutoscaler.maxReplicas!" .Values.horizontalPodAutoscaler.maxReplicas }}
+  metrics:
+    {{- with .Values.horizontalPodAutoscaler.types }}
+    {{- range $metricType, $metricOptions := . }}
+    - type: {{ if eq $metricType "cpu" "memory" }}Resource{{ else if eq $metricType "custom" }}Object{{ end }}
+      {{- if eq $metricType "cpu" "memory" }}
+      resource:
+        name: {{ $metricType }}
+        target:
+          type: {{ $metricOptions.type }}
+          {{- if eq $metricOptions.type "Utilization" }}
+          averageUtilization: {{ $metricOptions.target }}
+          {{- else if eq $metricOptions.type "averageValue" }}
+          averageValue: {{ $metricOptions.target }}
+          {{- end }}
+      {{- else if eq $metricType "custom" }}
+      object:
+        metric:
+          name: {{ $metricOptions.metricName }}
+        describedObject:
+          apiVersion: apps/v1
+          kind: Deployment
+          name: {{ template "fullname" $ }}
+        target:
+          type: {{ $metricOptions.type }}
+          value: {{ $metricOptions.target }}
+        {{- end }}
+    {{- end }}
+    {{- end }}
+{{- end }}

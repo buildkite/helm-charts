@@ -1,0 +1,16 @@
+{{- if and (.Values.horizontalPodAutoscaler.enabled) (not (empty .Values.horizontalPodAutoscaler.metrics)) }}
+apiVersion: {{ .Values.horizontalPodAutoscaler.apiVersion }}
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "fullname" . }}
+  minReplicas: {{ required "If enabling HorizontalPodAutoscaler, you must provide .minReplicas." .Values.horizontalPodAutoscaler.minReplicas }}
+  maxReplicas: {{ required "If enabling HorizontalPodAutoscaler, you must provide .maxReplicas." .Values.horizontalPodAutoscaler.maxReplicas }}
+  metrics:
+{{- toYaml .Values.horizontalPodAutoscaler.metrics | nindent 4 }}
+{{- end }}

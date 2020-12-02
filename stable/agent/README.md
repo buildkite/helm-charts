@@ -89,6 +89,13 @@ Parameter | Description | Default
 `affinity` | Node/pod affinity | `{}`
 `podAnnotations` | Extra annotation to apply to the pod | `{}`
 `podContainers` | Extra pod container or sidecar configuration | `nil`
+`horizontalPodAutoscaler.enabled` | Enable `HorizontalPodAutoscaler`. | `false`
+`horizontalPodAutoscaler.types` | Metric types to enable for the `HorizontalPodAutoscaler`. | `{}`
+`horizontalPodAutoscaler.maxReplicas` | Set `maxReplicas` value for `HorizontalPodAutoscaler`. | `nil`
+`horizontalPodAutoscaler.minReplicas` | Set `minReplicas` value for `HorizontalPodAutoscaler`. | `nil`
+`podDisruptionBudget.enabled` | Enable `PodDisruptionBudget`. | `false`
+`podDisruptionBudget.maxUnavailable` | Set `maxUnavailable` field for `PodDisruptionBudget`. | `1`
+`podDisruptionBudget.minAvailable` | Set `minAvailable` field for `PodDisruptionBudget` | `nil`
 `dind.enabled` | Enable preconfigured Docker-in-Docker (DinD) pod configuration | `false`
 `dind.image` | Image to use for Docker-in-Docker (DinD) pod container | `docker:19.03-dind`
 `dind.port` | Port Docker-in-Docker (DinD) daemon listens on as REST request proxy | `2375`
@@ -102,6 +109,34 @@ helm install --name bk-agent --namespace buildkite buildkite/agent -f values.yam
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml) file
+
+### Configuring the Horizontal Pod Autoscaler
+
+To configure a `HorizontalPodAutoscaler` for the Buildkite agent `Deployment`, simply set the following fields:
+
+- `apiVersion` - Optionally set the `apiVersion`. Defaults to `autoscaling/v2beta2`.
+- `maxReplicas` - The `maxReplicas` field. Required.
+- `minReplicas` - The `minReplicas` field. Required.
+- `metrics` - YAML-formatted metrics blocks that are compatible with your chosen configuration. Required.
+
+For example:
+
+```yaml
+horizontalPodAutoscaler:
+  apiVersion: autoscaling/v2beta1
+  enabled: true
+  maxReplicas: 50
+  minReplicas: 10
+  metrics:
+    - type: External
+      external:
+        metricName: foo
+        targetAverageValue: 90
+```
+
+The manifest for the `hpa` will not render if `metrics` are not provided.
+
+This solution is most useful with external metrics. Consult your upstream platform and other in-cluster operators for additional information and guidance.
 
 ## Buildkite pipeline examples
 

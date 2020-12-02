@@ -1,5 +1,5 @@
-{{- if and (.Values.horizontalPodAutoscaler.enabled) (.Values.horizontalPodAutoscaler.types) }}
-apiVersion: autoscaling/v2beta2
+{{- if and (.Values.horizontalPodAutoscaler.enabled) (not (empty .Values.horizontalPodAutoscaler.metrics)) }}
+apiVersion: {{ .Values.horizontalPodAutoscaler.apiVersion }}
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ template "fullname" . }}
@@ -9,34 +9,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ template "fullname" . }}
-  minReplicas: {{ required "If enabling the HorizontalPodAutoscaler, you must provide .Values.horizontalPodAutoscaler.minReplicas!" .Values.horizontalPodAutoscaler.minReplicas }}
-  maxReplicas: {{ required "If enabling the HorizontalPodAutoscaler, you must provide .Values.horizontalPodAutoscaler.maxReplicas!" .Values.horizontalPodAutoscaler.maxReplicas }}
+  minReplicas: {{ required "If enabling HorizontalPodAutoscaler, you must provide .minReplicas." .Values.horizontalPodAutoscaler.minReplicas }}
+  maxReplicas: {{ required "If enabling HorizontalPodAutoscaler, you must provide .maxReplicas." .Values.horizontalPodAutoscaler.maxReplicas }}
   metrics:
-    {{- with .Values.horizontalPodAutoscaler.types }}
-    {{- range $metricType, $metricOptions := . }}
-    - type: {{ if eq $metricType "cpu" "memory" }}Resource{{ else if eq $metricType "custom" }}Object{{ end }}
-      {{- if eq $metricType "cpu" "memory" }}
-      resource:
-        name: {{ $metricType }}
-        target:
-          type: {{ $metricOptions.type }}
-          {{- if eq $metricOptions.type "Utilization" }}
-          averageUtilization: {{ $metricOptions.target }}
-          {{- else if eq $metricOptions.type "averageValue" }}
-          averageValue: {{ $metricOptions.target }}
-          {{- end }}
-      {{- else if eq $metricType "custom" }}
-      object:
-        metric:
-          name: {{ $metricOptions.metricName }}
-        describedObject:
-          apiVersion: apps/v1
-          kind: Deployment
-          name: {{ template "fullname" $ }}
-        target:
-          type: {{ $metricOptions.type }}
-          value: {{ $metricOptions.target }}
-        {{- end }}
-    {{- end }}
-    {{- end }}
+{{- toYaml .Values.horizontalPodAutoscaler.metrics | nindent 4 }}
 {{- end }}

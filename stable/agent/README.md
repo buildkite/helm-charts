@@ -112,36 +112,31 @@ helm install --name bk-agent --namespace buildkite buildkite/agent -f values.yam
 
 ### Configuring the Horizontal Pod Autoscaler
 
-The `HorizontalPodAutoscaler` configuration section requires certain values to be set when enabling it or the Chart will error during install.
+To configure a `HorizontalPodAutoscaler` for the Buildkite agent `Deployment`, simply set the following fields:
 
-The following fields are required:
+- `apiVersion` - Optionally set the `apiVersion`. Defaults to `autoscaling/v2beta2`.
+- `maxReplicas` - The `maxReplicas` field. Required.
+- `minReplicas` - The `minReplicas` field. Required.
+- `metrics` - YAML-formatted metrics blocks that are compatible with your chosen configuration. Required.
 
-- `maxReplicas` - The `maxReplicas` field.
-- `minReplicas` - The `minReplicas` field.
-- `types` - A dictionary to create metrics types in the `HorizontalPodAutoscaler`. This is a structured dictionary that will accept the following headings:
-  - `cpu`
-  - `memory`
-  - `custom`
-
-The structure for the blocks is documented here:
+For example:
 
 ```yaml
 horizontalPodAutoscaler:
+  apiVersion: autoscaling/v2beta1
   enabled: true
   maxReplicas: 50
   minReplicas: 10
-  types:
-    cpu:
-      type: Utilization # or AverageValue
-      target: 80
-    memory:
-      type: AverageValue # or Utilization
-      target: 80
-    custom:
-      metricName: requests-per-second
-      type: AverageValue # or Value
-      target: 2k
+  metrics:
+    - type: External
+      external:
+        metricName: foo
+        targetAverageValue: 90
 ```
+
+The manifest for the `hpa` will not render if `metrics` are not provided.
+
+This solution is most useful with external metrics. Consult your upstream platform and other in-cluster operators for additional information and guidance.
 
 ## Buildkite pipeline examples
 

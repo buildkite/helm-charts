@@ -156,9 +156,10 @@ rbac:
 
 horizontalPodAutoscaler:
   enabled: false
-  # A list of types to use for autoscaling.
-  # Can be cpu, memory, or custom.
-  types: {}
+  # Control over apiVersion is necessary to provide compatibility.
+  apiVersion: autoscaling/v2beta2
+  # Provide yaml formatted metrics blocks here as needed.
+  metrics: {}
   maxReplicas: null
   minReplicas: null
 

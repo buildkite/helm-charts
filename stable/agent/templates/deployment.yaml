@@ -76,13 +76,6 @@ spec:
 {{- if .Values.extraEnv }}
 {{ toYaml .Values.extraEnv | nindent 12 }}
 {{- end }}
-          lifecycle:
-            preStop:
-              exec:
-                command:
-                  - /bin/sh
-                  - -c
-                  - kill -s SIGTERM `/bin/pidof buildkite-agent` && while pidof -q buildkite-agent; do sleep 1; done
           livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 12 }}
           resources:
